@@ -1,0 +1,27 @@
+name: Build PS2
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ps2dev/ps2dev:latest
+    steps:
+      - name: Dependencias
+        run: apk add --no-cache git make gcc musl-dev xorriso zip unzip
+      - uses: actions/checkout@v4
+      - name: Extrair projeto
+        run: unzip -o SLITHER_PS2.zip
+      - name: Testes
+        working-directory: SLITHER_PS2
+        run: make test
+      - name: Compilar
+        working-directory: SLITHER_PS2
+        run: make
+      - name: ISO
+        working-directory: SLITHER_PS2
+        run: make iso
+      - uses: actions/upload-artifact@v4
+        with:
+          name: slither-ps2
+          path: |
+            SLITHER_PS2/slither_ps2.elf
+            SLITHER_PS2/slither_ps2.iso
