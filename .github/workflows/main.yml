@@ -18,7 +18,11 @@ jobs:
         run: make
       - name: ISO
         working-directory: SLITHER_PS2
-        run: make iso
+        run: |
+          mkdir -p build_iso
+          cp slither_ps2.elf build_iso/SLUS_111.99
+          cp iso/SYSTEM.CNF build_iso/SYSTEM.CNF
+          xorriso -as mkisofs -o slither_ps2.iso -V SLITHER_PS2 -sysid PLAYSTATION -iso-level 1 build_iso
       - uses: actions/upload-artifact@v4
         with:
           name: slither-ps2
